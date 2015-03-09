@@ -28,13 +28,19 @@ $commands = [
         . '-vf scale=%d:-1,select="not(mod(n\\,%d))" "%s/thumbnails/%s-%%04d.jpg" 2>&1'
 ];
 
+define('EX_USAGE', 64);
+define('EX_NOINPUT', 66);
+define('EX_UNAVAILABLE', 69);
+define('EX_CANTCREAT', 73);
+
 if (PHP_SAPI !== 'cli') {
-    exit('Sorry, you can only use this via the command line.');
+    echo 'Sorry, you can only use this via the command line.';
+    exit(EX_USAGE);
 }
 
 $opts = getopt('i:o:t:w:hvpd');
 if (isset($opts['h']) || !isset($opts['i'])) {
-    $usage =<<< EOT
+    echo <<< EOT
 Usage: php thumbnails.php -i "/input/video.mp4" [-o "/output/directory"] [-t <number>] [-w <number>] [-v] [-p] [-d]
 
     -i: The input file to be used.
@@ -47,7 +53,7 @@ Usage: php thumbnails.php -i "/input/video.mp4" [-o "/output/directory"] [-t <nu
     -h: Show this message
 
 EOT;
-    exit($usage);
+    exit(EX_USAGE);
 }
 
 // process input parameters
@@ -66,19 +72,23 @@ if (isset($opts['w']) && (int)$opts['w']) {
 // sanity checks
 
 if (!is_readable($opts['i'])) {
-    exit("Cannot read the input file '{$opts['i']}'");
+    echo "Cannot read the input file '{$opts['i']}'";
+    exit(EX_NOINPUT);
 }
 if (!is_writable($params['output'])) {
-    exit("Cannot write to output directory '{$opts['o']}'");
+    echo "Cannot write to output directory '{$opts['o']}'";
+    exit(EX_CANTCREAT);
 }
 if (!file_exists($params['output'] . '/thumbnails')) {
     if (!mkdir($params['output'] . '/thumbnails')) {
-        exit("Could not create thumbnail output directory '{$params['output']}/thumbnails'");
+        echo "Could not create thumbnail output directory '{$params['output']}/thumbnails'";
+        exit(EX_CANTCREAT);
     }
 }
 $details = shell_exec(sprintf($commands['details'], $params['input']));
 if ($details === null || !preg_match('/^(?:\s+)?ffmpeg version ([^\s,]*)/i', $details)) {
-    exit("Cannot find ffmpeg - try specifying the path in the \$params variable");
+    echo 'Cannot find ffmpeg - try specifying the path in the $params variable';
+    exit(EX_UNAVAILABLE);
 }
 
 // determine some values we need
@@ -111,7 +121,8 @@ shell_exec(sprintf($commands['thumbs'],
 ));
 $files = glob("{$params['output']}/thumbnails/{$name}-*.jpg");
 if (!($total = count($files))) {
-    exit("Could not find any thumbnails matching '{$params['output']}/thumbnails/{$name}-*.jpg'");
+    echo "Could not find any thumbnails matching '{$params['output']}/thumbnails/{$name}-*.jpg'";
+    exit(EX_NOINPUT);
 }
 
 // create coalesce image if needs be
@@ -155,4 +166,4 @@ if (!isset($opts['v'])) {
 }
 
 file_put_contents("{$params['output']}/thumbnails.vtt", $vtt);
-exit("Process completed. Check the output directory '{$params['output']}' for VTT file and images");
+echo "Process completed. Check the output directory '{$params['output']}' for VTT file and images";
