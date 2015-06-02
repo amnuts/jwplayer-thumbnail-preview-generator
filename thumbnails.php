@@ -109,8 +109,16 @@ if (isset($opts['p'])) {
 // generate all thumbnail images
 
 $name = strtolower(substr(basename($opts['i']), 0, strrpos(basename($opts['i']), '.')));
+$iterator = new FilesystemIterator("{$params['output']}/thumbnails");
+$filter = function($current, $key, $iterator) use ($name) {
+    return (
+        $current->isFile()
+        && preg_match("!{$name}-\\d{4}\\.jpg$!", $current->getFilename())
+    );
+};
+
 if (isset($opts['d'])) {
-    $files = glob("{$params['output']}/thumbnails/{$name}-*.jpg");
+    $files = new CallbackFilterIterator($iterator, $filter);
     foreach ($files as $f) {
         unlink($f);
     }
@@ -119,9 +127,11 @@ shell_exec(sprintf($commands['thumbs'],
     $start + .0001, $params['input'], $params['thumbWidth'],
     $params['timespan'] * $tbr, $params['output'], $name
 ));
-$files = glob("{$params['output']}/thumbnails/{$name}-*.jpg");
+$files = array_values(iterator_to_array(
+    new CallbackFilterIterator($iterator, $filter)
+));
 if (!($total = count($files))) {
-    echo "Could not find any thumbnails matching '{$params['output']}/thumbnails/{$name}-*.jpg'";
+    echo "Could not find any thumbnails matching '{$params['output']}/thumbnails/{$name}-\\d{4}.jpg'";
     exit(EX_NOINPUT);
 }
 
