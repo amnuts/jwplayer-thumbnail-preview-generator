@@ -134,6 +134,7 @@ if (!($total = count($files))) {
     echo "Could not find any thumbnails matching '{$params['output']}/thumbnails/{$name}-\\d{4}.jpg'";
     exit(EX_NOINPUT);
 }
+sort($files, SORT_NATURAL);
 
 // create coalesce image if needs be
 
