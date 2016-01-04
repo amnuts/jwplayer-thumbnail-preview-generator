@@ -8,6 +8,8 @@ A simple but effective command-line tool for generating thumbnails of a video an
 
 FFmpeg is required to generate the thumbnails.
 
+PHP 5.4+ is required as the code uses short array syntax (though you could convert the code should you need to use a version of PHP less than 5.4).
+
 ### How to use the generator
 
 #### Simplest example
