@@ -6,9 +6,19 @@ A simple but effective command-line tool for generating thumbnails of a video an
 
 ### Requirements
 
-FFmpeg is required to generate the thumbnails.
+FFmpeg is required to generate the thumbnails.  If you have libav-tools install and the binary is a different name to ffmpeg (or even if you have ffmpeg but installed in a different location) then you can modify the `$params` information to point to your particular ffmpeg install.
 
-PHP 5.4+ is required as the code uses short array syntax (though you could convert the code should you need to use a version of PHP less than 5.4).
+PHP 5.4+ is required as the code uses short array syntax and the CallbackFilterIterator.
+
+### Getting started
+
+There are two ways to getting started using this script:
+
+1. Simply to copy/paste or download the thumbnails.php to your server
+2. Install via composer by running the command:
+```bash
+composer require amnuts/jwplayer-thumbnail-preview-generator
+```
 
 ### How to use the generator
 
@@ -16,7 +26,9 @@ PHP 5.4+ is required as the code uses short array syntax (though you could conve
 
 Typical usage would look like:
 
-	php thumbnails.php -i "/input/video.mp4"
+```bash
+php thumbnails.php -i "/input/video.mp4"
+```
 
 This would generate the thumbnails for the video given coalesced into one file (a sprite sheet) and the required VTT file that specifies which thumbnail to display and where in the sprite sheet it is located.
 
@@ -24,7 +36,9 @@ This would generate the thumbnails for the video given coalesced into one file (
 
 If you do not wish to generate a sprite sheet then include the `-v` switch to generate verbose output - ie, all the thumbnails are separate files and the VTT file points to each.
 
-	php thumbnails.php -i "/input/video.mp4" -v
+```bash
+php thumbnails.php -i "/input/video.mp4" -v
+```
 
 It is recommended that you use the default coalesced file as this is more optimal when loading than individual images.
 
@@ -32,7 +46,9 @@ It is recommended that you use the default coalesced file as this is more optima
 
 You can change the output directory with the `-o` switch:
 
-	php thumbnails.php -i "/input/video.mp4" -o "/output/directory"
+```bash
+php thumbnails.php -i "/input/video.mp4" -o "/output/directory"
+```
 
 This will write the images and VTT file in the provided directory (default is just to write into the same directory as the generator script).
 
@@ -40,7 +56,9 @@ This will write the images and VTT file in the provided directory (default is ju
 
 To alter the default time between thumbnails use the `-t` switch with the number of seconds you'd like between each:
 
-	php thumbnails.php -i "/input/video.mp4" -t 30
+```bash
+php thumbnails.php -i "/input/video.mp4" -t 30
+```
 
 That will generate one thumbnail for every 30 seconds of video.
 
@@ -48,7 +66,9 @@ That will generate one thumbnail for every 30 seconds of video.
 
 To change the width of the thumbnail use the `-w` switch with the size in pixels:
 
-	php thumbnails.php -i "/input/video.mp4" -w 75
+```bash
+php thumbnails.php -i "/input/video.mp4" -w 75
+```
 
 That will generate thumbnails that are 75 pixels in width.  The height is automatic and proportional to the video size.
 
@@ -56,25 +76,29 @@ That will generate thumbnails that are 75 pixels in width.  The height is automa
 
 The tool also provides the ability to generate a poster file of the video from a random frame of the video at the same time it's generating the thumbnails.  To do this, use the `-p` switch:
 
-	php thumbnails.php -i "/input/video.mp4" -p
+```bash
+php thumbnails.php -i "/input/video.mp4" -p
+```
 
 ### How to include in JW Player
 
 The code you would use for JW Player would be something like:
 
-    <div id="video">video loading...</div>
-    <script>
-        jwplayer("video").setup({
-            playlist: [{
-                file: "/input/video.mp4",
-                image: "poster.jpg",
-                tracks: [{
-                    file: "thumbnails.vtt",
-                    kind: "thumbnails"
-                }]
+```html
+<div id="video">video loading...</div>
+<script>
+    jwplayer("video").setup({
+        playlist: [{
+            file: "/input/video.mp4",
+            image: "poster.jpg",
+            tracks: [{
+                file: "thumbnails.vtt",
+                kind: "thumbnails"
             }]
-        });
-    </script>
+        }]
+    });
+</script>
+```
 
 # License
 

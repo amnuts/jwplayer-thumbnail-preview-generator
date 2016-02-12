@@ -1,0 +1,26 @@
+{
+  "name": "amnuts/jwplayer-thumbnail-preview-generator",
+  "description": "A simple but effective command-line tool for generating thumbnails of a video, and corresponding VTT file, for use within JW Player to allow for toolbar video preview.",
+  "keywords": ["video", "thumbnail", "thumbnails", "ffmpeg", "vtt", "jwplayer"],
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Andrew Collington",
+      "email": "andy@amnuts.com",
+      "homepage": "http://www.amnuts.com/",
+      "role": "Developer"
+    },
+    {
+      "name": "Contributors",
+      "homepage": "https://github.com/amnuts/jwplayer-thumbnail-preview-generator/graphs/contributors"
+    }
+  ],
+  "support": {
+    "email": "andy@amnuts.com",
+    "issues": "https://github.com/amnuts/jwplayer-thumbnail-preview-generator/issues"
+  },
+  "require": {
+    "php": ">=5.4"
+  }
+}
