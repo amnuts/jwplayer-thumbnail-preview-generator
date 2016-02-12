@@ -91,11 +91,17 @@ if ($details === null || !preg_match('/^(?:\s+)?ffmpeg version ([^\s,]*)/i', $de
     exit(EX_UNAVAILABLE);
 }
 
-// determine some values we need
+// determine some required values
 
 $time = $tbr = [];
 preg_match('/Duration: ((\d+):(\d+):(\d+))\.\d+, start: ([^,]*)/is', $details, $time);
 preg_match('/\b(\d+(?:\.\d+)?) tbr\b/', $details, $tbr);
+
+if (empty($time) || empty($tbr)) {
+    echo 'Cannot determine the duration or video frame rate - both are required to create the thumbnails.';
+    exit(EX_UNAVAILABLE);
+}
+
 $duration = ($time[2] * 3600) + ($time[3] * 60) + $time[4];
 $start = $time[5];
 $tbr = $tbr[1];
